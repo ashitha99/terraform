@@ -31,11 +31,11 @@ resource "aws_security_group" "strapi_sg" {
   }
 }
 resource "aws_instance" "strapi2" {
-  ami                         = "ami-0f58b397bc5c1f2e8"
+  ami                         = "ami-09040d770ffe2224f"
   instance_type               = "t2.medium"
   subnet_id              = "subnet-0960eb2b005124543"
   vpc_security_group_ids = [aws_security_group.strapi_sg.id]
-  key_name = "terraform"
+  key_name = "terras"
   associate_public_ip_address = true
   user_data                   = <<-EOF
                                 #!/bin/bash
