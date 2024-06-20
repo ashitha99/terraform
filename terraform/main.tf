@@ -33,7 +33,7 @@ resource "aws_security_group" "strapi_sg" {
 resource "aws_instance" "strapi2" {
   ami                         = "ami-0f58b397bc5c1f2e8"
   instance_type               = "t2.medium"
-  subnet_id              = "subnet-0a4ec147ad0256c6e"
+  subnet_id              = "subnet-0960eb2b005124543"
   vpc_security_group_ids = [aws_security_group.strapi_sg.id]
   key_name = "terraform"
   associate_public_ip_address = true
@@ -75,7 +75,7 @@ terraform {
 }
 
 provider "aws" {
-  region = "ap-south-1"  # Replace with your preferred region
+  region = "us-east-2"  # Replace with your preferred region
 }
 
 variable "private_key_path" {
