@@ -1,0 +1,40 @@
+name: Deploy Strapi
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    name: Deploy Strapi to EC2
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up SSH
+        uses: webfactory/ssh-agent@v0.5.3
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+      - name: Copy files to EC2
+        run: |
+          scp -o StrictHostKeyChecking=no -i ${{ secrets.SSH_KEY_PATH }} -r ./ ubuntu@${{ secrets.EC2_PUBLIC_IP }}:/home/ubuntu/new-strapi
+
+      - name: Connect to EC2 and deploy
+        run: |
+          ssh -o StrictHostKeyChecking=no -i ${{ secrets.SSH_KEY_PATH }} ubuntu@${{ secrets.EC2_PUBLIC_IP }} << 'EOF'
+            cd /home/ubuntu/new-strapi
+            sudo npm install
+            sudo npm install pm2 -g
+            git clone https://github.com/ashitha99/strapi-terraform.git /home/ubuntu/strapi-terraform
+            cd /home/ubuntu/strapi-terraform
+            sudo npm install strapi@beta -g
+            strapi new my-project --dbclient=sqlite
+            cd my-project
+            echo "module.exports = { server: { host: '0.0.0.0', port: 1337 } };" > config/env/development/server.js
+            pm2 start npm --name 'strapi' -- run develop
+          EOF
