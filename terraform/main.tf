@@ -1,5 +1,5 @@
-resource "aws_security_group" "strapi_sgd" {
-  name        = "strapi_sgd"
+resource "aws_security_group" "terraform_sg" {
+  name        = "terraform_sgd"
   description = "Allow SSH, HTTP, and custom port traffic"
 
   ingress {
@@ -30,11 +30,11 @@ resource "aws_security_group" "strapi_sgd" {
     cidr_blocks = ["0.0.0.0/0"]  # Allow all outbound traffic
   }
 }
-resource "aws_instance" "strapi2" {
+resource "aws_instance" "strapi" {
   ami                         = "ami-09040d770ffe2224f"
   instance_type               = "t2.medium"
   subnet_id              = "subnet-0960eb2b005124543"
-  vpc_security_group_ids = [aws_security_group.strapi_sgd.id]
+  vpc_security_group_ids = [aws_security_group.terraform_sg.id]
   key_name = "terras"
   associate_public_ip_address = true
   user_data                   = <<-EOF
@@ -62,7 +62,7 @@ resource "aws_instance" "strapi2" {
 # Output the public IP address of the instance
 output "instance_public_ip" {
   description = "The public IP address of the EC2 instance"
-  value       = aws_instance.strapi2.public_ip
+  value       = aws_instance.strapi.public_ip
 }
 
 terraform {
