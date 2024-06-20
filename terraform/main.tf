@@ -30,12 +30,12 @@ resource "aws_security_group" "strapi_sg" {
     cidr_blocks = ["0.0.0.0/0"]  # Allow all outbound traffic
   }
 }
-resource "aws_instance" "strapi" {
+resource "aws_instance" "strapi2" {
   ami                         = "ami-0f58b397bc5c1f2e8"
   instance_type               = "t2.medium"
   subnet_id              = "subnet-0c724a9e1beb09e35"
   vpc_security_group_ids = [aws_security_group.strapi_sg.id]
-  key_name = "thepair"
+  key_name = "terraform"
   associate_public_ip_address = true
   user_data                   = <<-EOF
                                 #!/bin/bash
