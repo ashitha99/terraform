@@ -30,15 +30,14 @@ resource "aws_security_group" "strapi_sg" {
     cidr_blocks = ["0.0.0.0/0"]  # Allow all outbound traffic
   }
 }
-
-resource "aws_instance" "strapi_instance" {
-  ami           = "ami-0f58b397bc5c1f2e8"  # Replace with a suitable AMI for your region
-  instance_type = "t2.micro"  # Use a lower vCPU instance type
-  key_name      = "terraform-test"  # Replace with your key pair name
-
-  vpc_security_group_ids = [aws_security_group.strapi_sg.id]  # Associate the security group
+resource "aws_instance" "strapi" {
+  ami                         = "ami-0f58b397bc5c1f2e8"
+  instance_type               = "t2.medium"
+  subnet_id              = "subnet-0c724a9e1beb09e35"
+  vpc_security_group_ids = [aws_security_group.strapi_sg.id]
+  key_name = "thepair"
   associate_public_ip_address = true
-  user_data = <<-EOF
+  user_data                   = <<-EOF
                                 #!/bin/bash
                                 sudo apt update
                                 curl -fsSL https://deb.nodesource.com/setup_20.x -o nodesource_setup.sh
@@ -52,8 +51,13 @@ resource "aws_instance" "strapi_instance" {
                                 pm2 start server.js --name strapi
                                 pm2 save && pm2 startup
                                 sleep 360
-              EOF
+                                EOF
+
+  tags = {
+    Name = "my_strapi"
+  }
 }
+
 
 # Output the public IP address of the instance
 output "instance_public_ip" {
