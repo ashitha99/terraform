@@ -37,7 +37,7 @@ resource "aws_instance" "strapi_instance" {
   key_name      = "terraform-test"  # Replace with your key pair name
 
   vpc_security_group_ids = [aws_security_group.strapi_sg.id]  # Associate the security group
-
+  associate_public_ip_address = true
   user_data = <<-EOF
               #!/bin/bash
               sudo apt-get update
@@ -50,6 +50,7 @@ resource "aws_instance" "strapi_instance" {
               cd my-project
               echo "module.exports = { server: { host: '0.0.0.0', port: 1337 } };" > config/env/development/server.js
               pm2 start npm --name 'strapi' -- run develop
+              sleep 360
               EOF
 }
 
