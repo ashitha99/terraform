@@ -13,5 +13,5 @@ provider "aws" {
 
 variable "private_key_path" {
   description = "Path to the private key file used for SSH connection"
-  default     = "C:\\Users\\91807\\OneDrive\\Desktop\\terraform-test.pem"
+  default     = "C:\\Users\\91807\\OneDrive\\Desktop\\terraform.pem"
 }
