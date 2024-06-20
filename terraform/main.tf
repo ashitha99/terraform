@@ -43,8 +43,6 @@ resource "aws_instance" "strapi_instance" {
               sudo apt-get update
               sudo apt-get install -y nodejs npm
               sudo npm install -g pm2
-              git clone https://github.com/ashitha99/strapi-terraform.git /home/ubuntu/strapi-terraform
-              cd /home/ubuntu/strapi-terraform
               sudo npm install strapi@beta -g
               strapi new my-project --dbclient=sqlite
               cd my-project
