@@ -62,7 +62,7 @@ resource "aws_instance" "strapi2" {
 # Output the public IP address of the instance
 output "instance_public_ip" {
   description = "The public IP address of the EC2 instance"
-  value       = aws_instance.strapi_instance.public_ip
+  value       = aws_instance.strapi2.public_ip
 }
 
 terraform {
