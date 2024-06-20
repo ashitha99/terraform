@@ -1,5 +1,5 @@
-resource "aws_security_group" "strapi_sg" {
-  name        = "strapi_sg"
+resource "aws_security_group" "strapi_sgd" {
+  name        = "strapi_sgd"
   description = "Allow SSH, HTTP, and custom port traffic"
 
   ingress {
