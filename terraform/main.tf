@@ -33,8 +33,8 @@ resource "aws_security_group" "strapi_sg" {
 
 resource "aws_instance" "strapi_instance" {
   ami           = "ami-0f58b397bc5c1f2e8"  # Replace with a suitable AMI for your region
-  instance_type = "t2.micro"  # Choose an instance type
-  key_name      = "terraform"  # Replace with your key pair name
+  instance_type = "t2.micro"  # Use a lower vCPU instance type
+  key_name      = "terraform-test"  # Replace with your key pair name
 
   vpc_security_group_ids = [aws_security_group.strapi_sg.id]  # Associate the security group
 
@@ -42,8 +42,9 @@ resource "aws_instance" "strapi_instance" {
               #!/bin/bash
               sudo apt-get update
               sudo apt-get install -y nodejs npm
+              sudo npm install -g pm2
               git clone https://github.com/ashitha99/strapi-terraform.git /home/ubuntu/strapi-terraform
-              cd /home/ubuntu/strapi terraform
+              cd /home/ubuntu/strapi-terraform
               sudo npm install strapi@beta -g
               strapi new my-project --dbclient=sqlite
               cd my-project
@@ -56,4 +57,22 @@ resource "aws_instance" "strapi_instance" {
 output "instance_public_ip" {
   description = "The public IP address of the EC2 instance"
   value       = aws_instance.strapi_instance.public_ip
+}
+
+terraform {
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = "5.54.1"
+    }
+  }
+}
+
+provider "aws" {
+  region = "ap-south-1"  # Replace with your preferred region
+}
+
+variable "private_key_path" {
+  description = "Path to the private key file used for SSH connection"
+  default     = "C:\\Users\\91807\\OneDrive\\Desktop\\terraform-test.pem"
 }
