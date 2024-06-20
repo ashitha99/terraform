@@ -1,5 +1,5 @@
 resource "aws_security_group" "terraform_sg" {
-  name        = "terraform_sgd"
+  name        = "terraform_sg"
   description = "Allow SSH, HTTP, and custom port traffic"
 
   ingress {
@@ -78,7 +78,3 @@ provider "aws" {
   region = "us-east-2"  # Replace with your preferred region
 }
 
-variable "private_key_path" {
-  description = "Path to the private key file used for SSH connection"
-  default     = "C:\\Users\\91807\\OneDrive\\Desktop\\terraform-test.pem"
-}
