@@ -1,39 +1,44 @@
-name: Deploy Strapi
+
+name: Terraform
 
 on:
   push:
     branches:
-      - main
-  workflow_dispatch:
-
+    - Rubi
+    
+  pull_request:
+    branches:
+    - Rubi
 jobs:
-  deploy:
-    name: Deploy Strapi to EC2
+  terraform:
+    name: "Terraform"
     runs-on: ubuntu-latest
+    env: 
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+    defaults:
+      run:
+        working-directory: terraform
+    
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Set up SSH
-        uses: webfactory/ssh-agent@v0.5.3
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v2
         with:
-          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+          terraform_version: 1.0.11 # Specify your Terraform version here
+          terraform_wrapper: false
+           
+      
+      - name: Terraform Init
+        id: init
+        run: terraform init
 
-      - name: Copy files to EC2
-        run: |
-          scp -o StrictHostKeyChecking=no -i ${{ secrets.SSH_KEY_PATH }} -r ./ ubuntu@${{ secrets.EC2_PUBLIC_IP }}:/home/ubuntu/new-strapi
+      - name: Terraform Plan
+        id: plan
+        run: terraform plan -no-color
 
-      - name: Connect to EC2 and deploy
-        run: |
-          ssh -o StrictHostKeyChecking=no -i ${{ secrets.SSH_KEY_PATH }} ubuntu@${{ secrets.EC2_PUBLIC_IP }} << 'EOF'
-            git clone https://github.com/ashitha99/new-strapi.git
-            cd /home/ubuntu/new-strapi
-            sudo npm install
-            sudo npm install pm2 -g
-            sudo npm install strapi@beta -g
-            strapi new my-project --dbclient=sqlite
-            cd my-project
-            echo "module.exports = { server: { host: '0.0.0.0', port: 1337 } };" > config/env/development/server.js
-            pm2 start npm --name 'strapi' -- run develop
-          EOF
+      - name: Terraform Apply
+        run: terraform apply -auto-approve
