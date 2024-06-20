@@ -34,7 +34,7 @@ resource "aws_security_group" "strapi_sg" {
 resource "aws_instance" "strapi_instance" {
   ami           = "ami-0f58b397bc5c1f2e8"  # Replace with a suitable AMI for your region
   instance_type = "t2.micro"  # Choose an instance type
-  key_name      = "terraform-test"  # Replace with your key pair name
+  key_name      = "terraform"  # Replace with your key pair name
 
   vpc_security_group_ids = [aws_security_group.strapi_sg.id]  # Associate the security group
 
